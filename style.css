@@ -1,0 +1,224 @@
+:root{
+    --modalBorder: 3px solid rgba(50%, 50%, 50%, 0.10);
+    --themeBackgroundColor: rgb(255, 243, 218);
+    --themeShadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+*{
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.toolbox-cont{
+    height: 5rem;
+    background-color: black;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.toolbox-priority-cont{
+    height: 3rem;
+    width: 20rem;
+    background-color: var(--themeBackgroundColor);
+    margin-left: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 5px;
+}
+
+.action-cont{
+    height: 3rem;
+    width: 8rem;
+    background-color: var(--themeBackgroundColor);
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 5px;
+    /* icons are treated as text for font-size can be used to set size of icons */
+    font-size: 1.25rem;
+    color: #000000;
+}
+
+.add-btn{
+    cursor:pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.rotate{
+    transform: rotate(45deg);
+}
+.del-btn{
+    cursor: pointer;
+}
+.del-mode{
+    color: red;
+}
+
+.color{
+    height: 2rem;
+    width: 4rem;
+    border: var(--modalBorder);
+    border-width: 1px;
+    border-radius: 2px;
+    /* transition: border 0.1s ease-in-out; */
+}
+.color:hover{
+    border: 3px solid rgba(0, 0, 0, 0.2);
+}
+.modal-container{
+    left:15vw;
+    top: 20vh;
+    height: 50vh;
+    width: 70vw;
+    display: none;
+    justify-content:stretch;
+    position: absolute;
+    z-index: 100;
+}
+
+.visible{
+    display: flex;
+    justify-content: center;
+    transform: translateX(35px);
+}
+
+.textarea-cont{
+    width: 95%;
+    max-width: 600px;
+    height: 100%;
+    outline: none;
+    border: var(--modalBorder);
+    border-radius: 10px;
+    resize: none;
+    background-color: var(--themeBackgroundColor);
+    font-size: 1.5rem;
+    padding: 1.5rem;
+    box-shadow: var(--themeShadow);
+    z-index: 1;
+}
+.priority-color-cont{
+    width: 70px;
+    height: 100%;
+    padding: 20px 5px 20px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.priority-color{
+    height: 100%;
+    width: 100%;
+    margin-right: 30px;
+    border-radius: 0px 5px 5px 0px;
+    transition: margin 0.2s;
+    transition-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+    z-index: 0;
+    cursor: pointer;
+}
+.priority-color:hover{
+    margin: 0px;
+}
+.selected{
+    margin: 0px;
+}
+
+.ticket-cont{
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.ticket{
+    width: 15rem;
+    height: 10rem;
+    background-color: var(--themeBackgroundColor);
+    display: flex;
+    flex-direction: column;
+    border-radius: 0px 0px 5px 5px;
+    box-shadow: var(--themeShadow);
+    position: relative;
+}
+
+.ticket-color{
+    width: 100%;
+    height: 20px;
+}
+
+.ticket-id{
+    padding: 0px 10px 0px 10px;
+    margin: 0px;
+    line-height: 1.5rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.ticket-text{
+    background: none;
+    resize: none;
+    border: none;
+    outline: none;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    margin: 0px;
+    font-size: 1.2rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: auto;
+    word-break: break-all;
+}
+
+.pink{
+    background-color: pink;
+}
+.skyblue{
+    background-color: lightskyblue;
+}
+.green{
+    background-color: lightgreen;
+}
+.grey{
+    background-color: darkgrey;
+}
+
+.filter-select{
+    border: 3px solid rgba(0, 0, 0, 0.2);
+}
+.lock-container{
+    right: 10px;
+    bottom: 10px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0.75);
+}
+.lock-head{
+    width: 15px;
+    height: 15px;
+    border: 4px solid #333;
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+    transition: transform 0.2s ease-in-out;
+    transform: translateY(5px);
+}
+
+.lock-body{
+    width: 20px;
+    height: 15px;
+    background-color: #333;
+    border-radius: 10%;
+}
+.unlock{
+    transform: rotateY(180deg) translateX(-10px) translateY(5px);
+}
+
