@@ -10,9 +10,8 @@ let selectedColor = null, assignedColor = null, delmodeSwitch = false, createmod
 let colorClassList = ['pink','skyblue','green','grey'];
 let currentFilter = null;
 
-let ticketArr = [];
-
-
+let ticketData = localStorage.getItem('tickets') ? JSON.parse(localStorage.getItem('tickets')) : [];
+ticketData.forEach(t => createTicket(t.text, t.color, t.id));
 
 function toggleModal() {
     modalCont.classList.toggle('visible');
@@ -40,19 +39,21 @@ function createTicketHandler(e){
     if(modalTextArea.value == '') alert('Please enter text');
     else if(!assignedColor) alert('Please select a color');
     else {
-        createTicket(modalTextArea.value, assignedColor);
+        let id = uid();
+        createTicket(modalTextArea.value, assignedColor, id);
+        updateStorage(id, modalTextArea.value, assignedColor);
         toggleModal();
         modalTextArea.value = '';
     }
 }
 
-function createTicket(textValue, ticketColor){
+function createTicket(textValue, ticketColor, id){
     let ticketDiv = document.createElement('div');
     ticketDiv.className = 'ticket';
     ticketDiv.innerHTML = `
         <div class="ticket-color ${ticketColor}"></div>
-        <p class="ticket-id">${uid()}</p>
-        <textarea class="ticket-text" disabled="true">${textValue}</textarea>
+        <p class="ticket-id">${id}</p>
+        <div class="ticket-text">${textValue}</div>
         <div class="lock-container">
             <div class="lock-head"></div>
             <div class="lock-body"></div>
@@ -61,8 +62,11 @@ function createTicket(textValue, ticketColor){
 }
 
 function delTicket(e){
-    if(e.target != mainContainer)
+    if(e.target != mainContainer){
+        let id = e.target.parentNode.querySelector('.ticket-id').textContent;
         mainContainer.removeChild(e.target.parentNode);
+        delStorage(id);
+    }
 }
 
 function delBtnHandler(){
@@ -70,11 +74,24 @@ function delBtnHandler(){
     delmodeSwitch = !delmodeSwitch;
 }
 
+function delStorage(id){
+    for(let i=0; i<ticketData.length; i++){
+        if(ticketData[i].id == id){
+            ticketData.splice(i,1);
+            break;
+        }
+    }
+    localStorage.setItem('tickets', JSON.stringify(ticketData));
+}
+
 function changeTicketColor(e){
     let el = e.target;
     if(el.classList[0] == 'ticket-color'){
         let i=(colorClassList.indexOf(el.classList[1])+1) % colorClassList.length;
         el.classList.replace(el.classList[1],colorClassList[i]);
+        let id = el.nextElementSibling.textContent;
+        let text = '';
+        updateStorage(id, text, colorClassList[i]);
     }
 }
 
@@ -104,12 +121,39 @@ function filterTickets(e){
 }
 
 function lockHandler(e) {
-    let lock = e.target;
-    console.log(e.target);
-    lock.parentNode.querySelector('.lock-head').classList.toggle('unlock');
+    let targetTicket = e.target.parentNode.parentNode;
+    let ticketText = targetTicket.querySelector('.ticket-text');
+    let id = targetTicket.querySelector('.ticket-id').textContent;
+    let color = '';
+
+    targetTicket.querySelector('.lock-head').classList.toggle('unlock');
     lockMode = !lockMode;
-    lock.parentNode.parentNode.querySelector('.ticket-text').disabled = !lockMode;
+    ticketText.contentEditable = lockMode;
+
+    if(!lockMode) updateStorage(id, ticketText.textContent, color);
 }
+
+function updateStorage(id,text,color){
+    let data = null;    
+    for(let t of ticketData){
+        if(t.id == id){
+            t.text = text || t.text;
+            t.color = color || t.color;
+            
+            data = true;
+        }
+    }
+    if(!data){
+        data = {
+            id: id,
+            text: text,
+            color: color
+        }
+        ticketData.push(data);
+    }
+    localStorage.setItem('tickets', JSON.stringify(ticketData));
+}
+
 
 addBtn.addEventListener('click', toggleModal);
 delBtn.addEventListener('click', delBtnHandler);
@@ -120,3 +164,26 @@ mainContainer.addEventListener('click', (e) => {
     else if(modeSwitch == 'ticket-color') changeTicketColor(e);
     else if(modeSwitch == 'lock-body' || modeSwitch == 'lock-head') lockHandler(e);
 });
+
+/* 
+
+Updating localStorage
+1. createTicket: at the end of create ticket fn
+    create new object for ticket-text, ticket-color, ticket-id
+    add this object to tickerArr
+2. delTicket: on target click
+    del data of the tickets selected
+    from localStorage
+3. changeTicketColor: on target click
+    update ticket-color of corresponding ticket-id
+    in ticketData
+4. lockHandler: on lock
+    update ticket-text of corresponding ticket-id
+    in ticketData
+
+Reloading from localStorage on page load
+1. fetch data from localStorage into an array
+2. traverse through the array
+3. createTicket from every item in array
+
+*/
